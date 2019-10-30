@@ -23,8 +23,6 @@ def extract_feat(feat_func, dataset, **kwargs):
         batch_size = feat_tmp.shape[0]
         if ep == 0:
             feat = np.zeros((N, int(feat_tmp.size/batch_size)))
-            print(feat_tmp.size)
-            print(batch_size)
         feat[start:start+batch_size, :] = feat_tmp.reshape((batch_size, -1))
         start += batch_size
     end_time = time.time()
@@ -88,7 +86,7 @@ def attribute_evaluate_lidw(gt_result, pt_result, att_name):
         result[att_name[idx]]['label_neg_acc'] = label_neg_acc
         result[att_name[idx]]['label_acc'] = label_acc
 
-    
+
     # compute the instance-based accuracy
     # precision
     gt_pos = np.sum((gt_result == 1).astype(float), axis=1)

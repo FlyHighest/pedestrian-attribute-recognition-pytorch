@@ -306,7 +306,7 @@ def attribute_evaluate_subfunc(feat_func, test_set, **test_kwargs):
     print(" {:>25s} | {:>4s} | {:>4s} | {:>4s} ".format("Attr Name","P","N","A"))
     print("="*48)
     for idx in range(len(test_set.att_name)):
-        print(" {:>25s} | {:.2f} | {:.2f} | {:.2f} ".format(test_set.att_name[idx],result[test_set.att_name[idx]]['label_pos_acc'],result[test_set.att_name[idx]]['label_neg_acc'],result[test_set.att_name[idx]]['label_acc']))
+        print(" {:>25s} | {:.2f} | {:.2f} | {:.2f} ".format(test_set.att_name[idx],100*result[test_set.att_name[idx]]['label_pos_acc'],100*result[test_set.att_name[idx]]['label_neg_acc'],100*result[test_set.att_name[idx]]['label_acc']))
     print( '=' * 48)
 
 # print- the model into log
