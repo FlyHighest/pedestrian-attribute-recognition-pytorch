@@ -303,7 +303,7 @@ def attribute_evaluate_subfunc(feat_func, test_set, **test_kwargs):
     print('Instance-based evaluation: \n Acc: %.4f, Prec: %.4f, Rec: %.4f, F1: %.4f' \
         %(result['instance_acc'], result['instance_precision'], result['instance_recall'], result['instance_F1']))
     print("Label-based evaluation in details:")
-    print(" {:>25s} | {:>4s} | {:>4s} | {:>4s} ".format("Attr Name","P","N","A"))
+    print(" {:>25s} | {:^5s} | {:^5s} | {:^5s} ".format("Attr Name","P","N","A"))
     print("="*48)
     for idx in range(len(test_set.att_name)):
         print(" {:>25s} | {:.2f} | {:.2f} | {:.2f} ".format(test_set.att_name[idx],100*result[test_set.att_name[idx]]['label_pos_acc'],100*result[test_set.att_name[idx]]['label_neg_acc'],100*result[test_set.att_name[idx]]['label_acc']))
