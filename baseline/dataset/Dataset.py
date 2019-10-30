@@ -18,16 +18,16 @@ class AttDataset(data.Dataset):
         transform=None,
         **kwargs):
         if os.path.exists( dataset ):
-            self.dataset = pickle.load(open(dataset))
+            self.dataset = pickle.load(open(dataset,'rb'))
         else:
             print( dataset + ' does not exist in dataset.')
             raise ValueError
         if os.path.exists( partition ):
-            self.partition = pickle.load(open(partition))
+            self.partition = pickle.load(open(partition,'rb'))
         else:
             print( partition + ' does not exist in dataset.')
             raise ValueError
-        if not self.partition.has_key(split):
+        if split not in  self.partition.keys():
             print( split + ' does not exist in dataset.')
             raise ValueError
 
@@ -36,7 +36,6 @@ class AttDataset(data.Dataset):
             raise ValueError
 
         self.transform = transform
-        self.target_transform = target_transform
 
         # create image, label based on the selected partition and dataset split
         self.root_path = self.dataset['root']

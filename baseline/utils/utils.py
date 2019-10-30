@@ -209,7 +209,7 @@ def transfer_optim_state(state, device_id=-1):
                     state[key] = val.cpu()
                 else:
                     state[key] = val.cuda(device=device_id)
-            except:
+            except Exception as exce:
                 pass
             
 
@@ -229,9 +229,9 @@ def load_state_dict(model, src_state_dict):
             param = param.data
         try:
             dest_state_dict[name].copy_(param)
-        except Exception, msg:
+        except Exception as exce:
             print("Warning: Error occurs when copying '{}': {}"
-                .format(name, str(msg)))
+                .format(name, str(exce)))
 
     src_missing = set(dest_state_dict.keys()) - set(src_state_dict.keys())
     if len(src_missing) > 0:
