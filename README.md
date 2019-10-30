@@ -3,21 +3,21 @@
 ## Preparation
 <font face="Times New Roman" size=4>
 
-**Prerequisite: Python 2.7 and Pytorch 0.3.1**
+**Prerequisite: Python 3.7 and Pytorch 1.3.0**
 
 1. Install [Pytorch](https://pytorch.org/)
 
 2. Download and prepare the dataset as follow:
 
     a. PETA [Baidu Yun](https://pan.baidu.com/s/1q8nsydT7xkDjZJOxvPcoEw), passwd: 5vep, or [Google Drive](https://drive.google.com/open?id=1q4cux17K3zNBgIrDV4FtcHJPLzXNKfYG).
-    
+
     ```
     ./dataset/peta/images/*.png
     ./dataset/peta/PETA.mat
     ./dataset/peta/README
     ```
     ```
-    python script/dataset/transform_peta.py 
+    python script/dataset/transform_peta.py
     ```
 
     b. RAP [Google Drive](https://drive.google.com/open?id=1FkXlpbk3R-M_vkvM8ByeAZVAMzN6vUOr).
@@ -33,9 +33,9 @@
     ```
     ./dataset/pa100k/data/*.png
     ./dataset/pa100k/annotation.mat
-    ``` 
     ```
-    python script/dataset/transform_pa100k.py 
+    ```
+    python script/dataset/transform_pa100k.py
     ```
 
     d. RAP(v2) [Links](https://drive.google.com/open?id=1hoPIB5NJKf3YGMvLFZnIYG5JDcZTxHph).
@@ -53,7 +53,7 @@
 
    ```
    sh script/experiment/train.sh
-   ``` 
+   ```
 </font>
 
 ## Test the model
@@ -65,7 +65,7 @@
 
 </font>
 
-## Demo 
+## Demo
 <font face="Times New Roman" size=4>
 
    ```

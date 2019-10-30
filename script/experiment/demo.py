@@ -8,7 +8,7 @@ import torch
 import torchvision.transforms as transforms
 from torch.autograd import Variable
 from torch.nn.parallel import DataParallel
-import cPickle as pickle
+import  pickle
 import time
 import argparse
 from PIL import Image, ImageFont, ImageDraw

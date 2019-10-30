@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import random
-import cPickle as pickle
+import pickle
 from scipy.io import loadmat
 
 np.random.seed(0)
@@ -28,7 +28,7 @@ def generate_data_description(save_dir):
     dataset['selected_attribute'] = (data['RAP_annotation'][0][0][3][0,:]-1).tolist()
     for idx in range(152):
         dataset['att_name'].append(data['RAP_annotation'][0][0][2][idx][0][0])
-    
+
     for idx in range(84928):
         dataset['image'].append(data['RAP_annotation'][0][0][0][idx][0][0])
         dataset['att'].append(data['RAP_annotation'][0][0][1][idx, :].tolist())

@@ -2,7 +2,7 @@ import torch.utils.data as data
 import os
 from PIL import Image
 import numpy as np
-import cPickle as pickle
+import  pickle
 import copy
 
 class AttDataset(data.Dataset):
