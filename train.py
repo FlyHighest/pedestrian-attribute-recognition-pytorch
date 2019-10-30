@@ -8,7 +8,6 @@ import torch
 import torch.optim as optim
 import torchvision.transforms as transforms
 import torch.nn.functional as F
-import torch.backends.cudnn as cudnn
 from torch.autograd import Variable
 from torch.nn.parallel import DataParallel
 import cPickle as pickle
@@ -294,7 +293,6 @@ model_w = torch.nn.DataParallel(model)
 model_w.cuda()
 transfer_optim_state(state=optimizer.state, device_id=0)
 
-# cudnn.benchmark = True
 # for evaluation
 feat_func_att = DeepMAR_ResNet50_ExtractFeature(model=model_w)
 

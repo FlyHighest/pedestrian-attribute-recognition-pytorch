@@ -16,7 +16,6 @@ class AttDataset(data.Dataset):
         split='train',
         partition_idx=0,
         transform=None,
-        target_transform=None,
         **kwargs):
         if os.path.exists( dataset ):
             self.dataset = pickle.load(open(dataset))
@@ -67,8 +66,6 @@ class AttDataset(data.Dataset):
         target = np.array(target).astype(np.float32)
         target[target == 0] = -1
         target[target == 2] = 0
-        if self.target_transform is not None:
-            target = self.transform( target )
 
         return img, target
 
