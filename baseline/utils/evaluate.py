@@ -1,6 +1,5 @@
 import os
 import torch
-from torch.autograd import Variable
 import numpy as np
 import copy
 import time
@@ -19,11 +18,13 @@ def extract_feat(feat_func, dataset, **kwargs):
     N = len(dataset.image)
     start = 0
     for ep, (imgs, labels) in enumerate(test_loader):
-        imgs_var = Variable(imgs, volatile=True).cuda()
+        imgs_var = imgs.cuda()
         feat_tmp = feat_func( imgs_var )
         batch_size = feat_tmp.shape[0]
         if ep == 0:
-            feat = np.zeros((N, feat_tmp.size/batch_size))
+            feat = np.zeros((N, int(feat_tmp.size/batch_size)))
+            print(feat_tmp.size)
+            print(batch_size)
         feat[start:start+batch_size, :] = feat_tmp.reshape((batch_size, -1))
         start += batch_size
     end_time = time.time()

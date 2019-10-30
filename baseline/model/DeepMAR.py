@@ -39,8 +39,8 @@ class DeepMAR_ResNet50(nn.Module):
         self.base = resnet50(pretrained=self.pretrained, last_conv_stride=self.last_conv_stride)
 
         self.classifier = nn.Linear(2048, self.num_att)
-        init.normal(self.classifier.weight, std=0.001)
-        init.constant(self.classifier.bias, 0)
+        init.normal_(self.classifier.weight, std=0.001)
+        init.constant_(self.classifier.bias, 0)
 
     def forward(self, x):
         x = self.base(x)
