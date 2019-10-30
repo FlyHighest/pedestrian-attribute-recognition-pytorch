@@ -302,7 +302,12 @@ def attribute_evaluate_subfunc(feat_func, test_set, **test_kwargs):
     print( 'Label-based evaluation: \n mA: %.4f'%(np.mean(result['label_acc'])))
     print('Instance-based evaluation: \n Acc: %.4f, Prec: %.4f, Rec: %.4f, F1: %.4f' \
         %(result['instance_acc'], result['instance_precision'], result['instance_recall'], result['instance_F1']))
-    print( '-' * 60)
+    print("Label-based evaluation in details:")
+    print(" {:>25s} | {:>4s} | {:>4s} | {:>4s} ".format("Attr Name","P","N","A"))
+    print("="*48)
+    for idx in range(len(test_set.att_name)):
+        print(" {:>25s} | {:.2f} | {:.2f} | {:.2f} ".format(test_set.att_name[idx],result[test_set.att_name[idx]]['label_pos_acc'],result[test_set.att_name[idx]]['label_neg_acc'],result[test_set.att_name[idx]]['label_acc']))
+    print( '=' * 48)
 
 # print- the model into log
 print( model)

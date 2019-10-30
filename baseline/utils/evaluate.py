@@ -45,9 +45,9 @@ def attribute_evaluate(feat_func, dataset, **kwargs):
         gt_result[idx, :] = label
     pt_result[pt_result>=0] = 1
     pt_result[pt_result<0] = 0
-    return attribute_evaluate_lidw(gt_result, pt_result)
+    return attribute_evaluate_lidw(gt_result, pt_result,dataset.att_name)
 
-def attribute_evaluate_lidw(gt_result, pt_result):
+def attribute_evaluate_lidw(gt_result, pt_result, att_name):
     """
     Input:
     gt_result, pt_result, N*L, with 0/1
@@ -73,6 +73,22 @@ def attribute_evaluate_lidw(gt_result, pt_result):
     result['label_pos_acc'] = label_pos_acc
     result['label_neg_acc'] = label_neg_acc
     result['label_acc'] = label_acc
+
+    # compute accuracy for every label
+    for idx in range(len(att_name)):
+        gt_pos = np.sum((gt_result[:,idx] == 1).astype(float))
+        gt_neg = np.sum((gt_result[:,idx] == 0).astype(float))
+        pt_pos = np.sum((gt_result[:,idx] == 1).astype(float) * (pt_result[:,idx] == 1).astype(float))
+        pt_neg = np.sum((gt_result[:,idx] == 0).astype(float) * (pt_result[:,idx] == 0).astype(float))
+        label_pos_acc = 1.0*pt_pos/gt_pos
+        label_neg_acc = 1.0*pt_neg/gt_neg
+        label_acc = (label_pos_acc + label_neg_acc)/2
+        result[att_name[idx]] = {}
+        result[att_name[idx]]['label_pos_acc'] = label_pos_acc
+        result[att_name[idx]]['label_neg_acc'] = label_neg_acc
+        result[att_name[idx]]['label_acc'] = label_acc
+
+    
     # compute the instance-based accuracy
     # precision
     gt_pos = np.sum((gt_result == 1).astype(float), axis=1)
