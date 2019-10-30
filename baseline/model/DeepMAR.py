@@ -9,14 +9,14 @@ from .resnet import resnet50
 
 class DeepMAR_ResNet50(nn.Module):
     def __init__(
-        self, 
+        self,
         **kwargs
     ):
         super(DeepMAR_ResNet50, self).__init__()
-        
+
         # init the necessary parameter for netwokr structure
         if kwargs.has_key('num_att'):
-            self.num_att = kwargs['num_att'] 
+            self.num_att = kwargs['num_att']
         else:
             self.num_att = 35
         if kwargs.has_key('last_conv_stride'):
@@ -26,18 +26,18 @@ class DeepMAR_ResNet50(nn.Module):
         if kwargs.has_key('drop_pool5'):
             self.drop_pool5 = kwargs['drop_pool5']
         else:
-            self.drop_pool5 = True 
+            self.drop_pool5 = True
         if kwargs.has_key('drop_pool5_rate'):
             self.drop_pool5_rate = kwargs['drop_pool5_rate']
         else:
             self.drop_pool5_rate = 0.5
         if kwargs.has_key('pretrained'):
-            self.pretrained = kwargs['pretrained'] 
+            self.pretrained = kwargs['pretrained']
         else:
             self.pretrained = True
 
         self.base = resnet50(pretrained=self.pretrained, last_conv_stride=self.last_conv_stride)
-        
+
         self.classifier = nn.Linear(2048, self.num_att)
         init.normal(self.classifier.weight, std=0.001)
         init.constant(self.classifier.bias, 0)
@@ -66,7 +66,7 @@ class DeepMAR_ResNet50_ExtractFeature(object):
 
         # imgs should be Variable
         if not isinstance(imgs, Variable):
-            print 'imgs should be type: Variable'
+            print( 'imgs should be type: Variable')
             raise ValueError
         score = self.model(imgs)
         score = score.data.cpu().numpy()

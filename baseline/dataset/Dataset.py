@@ -10,7 +10,7 @@ class AttDataset(data.Dataset):
     person attribute dataset interface
     """
     def __init__(
-        self, 
+        self,
         dataset,
         partition,
         split='train',
@@ -20,19 +20,19 @@ class AttDataset(data.Dataset):
         if os.path.exists( dataset ):
             self.dataset = pickle.load(open(dataset))
         else:
-            print dataset + ' does not exist in dataset.'
+            print( dataset + ' does not exist in dataset.')
             raise ValueError
         if os.path.exists( partition ):
             self.partition = pickle.load(open(partition))
         else:
-            print partition + ' does not exist in dataset.'
+            print( partition + ' does not exist in dataset.')
             raise ValueError
         if not self.partition.has_key(split):
-            print split + ' does not exist in dataset.'
+            print( split + ' does not exist in dataset.')
             raise ValueError
-        
+
         if partition_idx > len(self.partition[split])-1:
-            print 'partition_idx is out of range in partition.'
+            print( 'partition_idx is out of range in partition.')
             raise ValueError
 
         self.transform = transform
@@ -61,7 +61,7 @@ class AttDataset(data.Dataset):
         img = Image.open(imgname)
         if self.transform is not None:
             img = self.transform( img )
-        
+
         # default no transform
         target = np.array(target).astype(np.float32)
         target[target == 0] = -1
@@ -72,5 +72,3 @@ class AttDataset(data.Dataset):
     # useless for personal batch sampler
     def __len__(self):
         return len(self.image)
-
-

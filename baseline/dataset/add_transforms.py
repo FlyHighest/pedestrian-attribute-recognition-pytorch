@@ -32,14 +32,14 @@ class AddPad(object):
             self.pad_u = int(self.padding[2])
             self.pad_d = int(self.padding[3])
         else:
-            print "The type of padding is not right."
+            print("The type of padding is not right.")
             raise ValueError
         if self.pad_l <0 or self.pad_r < 0 or self.pad_u < 0 or self.pad_d < 0:
             raise ValueError
         if isinstance(self.fill, numbers.Number):
             self.fill_value = [self.fill]
         elif isinstance(self.fill, list):
-            self.fill_value = self.fill 
+            self.fill_value = self.fill
 
     def __repr__(self):
         return self.__class__.__name__ + '(padding={0})'.format(self.padding)
@@ -55,7 +55,7 @@ class AddPad(object):
             return img
         shape = img.shape
         img_ = torch.rand(shape[0], shape[1]+self.pad_u+self.pad_d, \
-                shape[2]+self.pad_l+self.pad_r) 
+                shape[2]+self.pad_l+self.pad_r)
         for i in range(shape[0]):
             img_[i, 0:self.pad_u, :] = self.fill_value[i%len(self.fill_value)]
             img_[i, -(self.pad_d+1):-1, :] = self.fill_value[i%len(self.fill_value)]

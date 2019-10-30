@@ -8,34 +8,32 @@ import torch
 import torch.optim as optim
 import torchvision.transforms as transforms
 import torch.nn.functional as F
-from torch.autograd import Variable
 from torch.nn.parallel import DataParallel
-import cPickle as pickle
 import time
 import argparse
 
 from baseline.dataset import add_transforms
 from baseline.dataset.Dataset import AttDataset
 from baseline.model.DeepMAR import DeepMAR_ResNet50
-from baseline.model.DeepMAR import DeepMAR_ResNet50_ExtractFeature 
+from baseline.model.DeepMAR import DeepMAR_ResNet50_ExtractFeature
 from baseline.utils.evaluate import attribute_evaluate
 from baseline.utils.utils import str2bool
 from baseline.utils.utils import transfer_optim_state
 from baseline.utils.utils import time_str
 from baseline.utils.utils import save_ckpt, load_ckpt
-from baseline.utils.utils import load_state_dict 
+from baseline.utils.utils import load_state_dict
 from baseline.utils.utils import ReDirectSTD
 from baseline.utils.utils import adjust_lr_staircase
 from baseline.utils.utils import set_devices
 from baseline.utils.utils import AverageMeter
-from baseline.utils.utils import to_scalar 
-from baseline.utils.utils import may_set_mode 
-from baseline.utils.utils import may_mkdir 
+from baseline.utils.utils import to_scalar
+from baseline.utils.utils import may_set_mode
+from baseline.utils.utils import may_mkdir
 from baseline.utils.utils import set_seed
 
 class Config(object):
     def __init__(self):
-        
+
         parser = argparse.ArgumentParser()
         parser.add_argument('-d', '--sys_device_ids', type=eval, default=(0,))
         parser.add_argument('--set_seed', type=str2bool, default=False)
@@ -81,14 +79,14 @@ class Config(object):
         parser.add_argument('--epochs_per_save', type=int, default=50)
         parser.add_argument('--run', type=int, default=1)
         args = parser.parse_args()
-        
+
         # gpu ids
         self.sys_device_ids = args.sys_device_ids
         # random
         self.set_seed = args.set_seed
         if self.set_seed:
             self.rand_seed = 0
-        else: 
+        else:
             self.rand_seed = None
         # run time index
         self.run = args.run
@@ -103,10 +101,10 @@ class Config(object):
         partitions['rap'] = './dataset/rap/rap_partition.pkl'
         partitions['pa100k'] = './dataset/pa100k/pa100k_partition.pkl'
         partitions['rap2'] = './dataset/rap2/rap2_partition.pkl'
-        
+
         self.dataset_name = args.dataset
         if not datasets.has_key(args.dataset) or not partitions.has_key(args.dataset):
-            print "Please select the right dataset name."
+            print( "Please select the right dataset name.")
             raise ValueError
         else:
             self.dataset = datasets[args.dataset]
@@ -135,13 +133,13 @@ class Config(object):
         self.ckpt_file = args.ckpt_file
         if self.resume:
             if self.ckpt_file == '':
-                print 'Please input the ckpt_file if you want to resume training'
+                print( 'Please input the ckpt_file if you want to resume training')
                 raise ValueError
         self.load_model_weight = args.load_model_weight
         self.model_weight_file = args.model_weight_file
         if self.load_model_weight:
             if self.model_weight_file == '':
-                print 'Please input the model_weight_file if you want to load model weight'
+                print( 'Please input the model_weight_file if you want to load model weight')
                 raise ValueError
         self.test_only = args.test_only
         self.exp_dir = args.exp_dir
@@ -151,7 +149,7 @@ class Config(object):
         self.epochs_per_val = args.epochs_per_val
         self.epochs_per_save = args.epochs_per_save
         self.run = args.run
-        
+
         # for model
         model_kwargs = dict()
         model_kwargs['num_att'] = args.num_att
@@ -195,16 +193,16 @@ if cfg.set_seed:
 # init the gpu ids
 set_devices(cfg.sys_device_ids)
 
-# dataset 
+# dataset
 normalize = transforms.Normalize(mean=cfg.mean, std=cfg.std)
 transform = transforms.Compose([
         transforms.Resize(cfg.resize),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(), # 3*H*W, [0, 1]
         normalize,]) # normalize with mean/std
-# by a subset of attributes 
+# by a subset of attributes
 train_set = AttDataset(
-    dataset = cfg.dataset, 
+    dataset = cfg.dataset,
     partition = cfg.partition,
     split = cfg.split,
     partition_idx= cfg.partition_idx,
@@ -249,7 +247,7 @@ if rate is None:
     weight_neg = [1 for i in range(num_att)]
 else:
     if len(rate) != num_att:
-        print "the length of rate should be equal to %d" % (num_att)
+        print( "the length of rate should be equal to %d" % (num_att))
         raise ValueError
     weight_pos = []
     weight_neg = []
@@ -263,7 +261,7 @@ finetuned_params = []
 new_params = []
 for n, p in model.named_parameters():
     if n.find('classifier') >=0:
-        new_params.append(p) 
+        new_params.append(p)
     else:
         finetuned_params.append(p)
 param_groups = [{'params': finetuned_params, 'lr': cfg.finetuned_params_lr},
@@ -284,7 +282,7 @@ if cfg.load_model_weight:
 
 ### Resume or not ###
 if cfg.resume:
-    # store the model, optimizer, epoch 
+    # store the model, optimizer, epoch
     start_epoch, scores = load_ckpt(modules_optims, cfg.ckpt_file)
 else:
     start_epoch = 0
@@ -296,24 +294,24 @@ transfer_optim_state(state=optimizer.state, device_id=0)
 # for evaluation
 feat_func_att = DeepMAR_ResNet50_ExtractFeature(model=model_w)
 
-def attribute_evaluate_subfunc(feat_func, test_set, **test_kwargs): 
+def attribute_evaluate_subfunc(feat_func, test_set, **test_kwargs):
     """ evaluate the attribute recognition precision """
     result = attribute_evaluate(feat_func, test_set, **test_kwargs)
-    print '-' * 60
-    print 'Evaluation on %s set:' % (cfg.test_split)
-    print 'Label-based evaluation: \n mA: %.4f'%(np.mean(result['label_acc']))
-    print 'Instance-based evaluation: \n Acc: %.4f, Prec: %.4f, Rec: %.4f, F1: %.4f' \
-        %(result['instance_acc'], result['instance_precision'], result['instance_recall'], result['instance_F1'])
-    print '-' * 60
+    print( '-' * 60)
+    print( 'Evaluation on %s set:' % (cfg.test_split))
+    print( 'Label-based evaluation: \n mA: %.4f'%(np.mean(result['label_acc'])))
+    print('Instance-based evaluation: \n Acc: %.4f, Prec: %.4f, Rec: %.4f, F1: %.4f' \
+        %(result['instance_acc'], result['instance_precision'], result['instance_recall'], result['instance_F1']))
+    print( '-' * 60)
 
-# print the model into log
-print model
+# print- the model into log
+print( model)
 # test only
 if cfg.test_only:
-    print 'test with feat_func_att'
+    print ('test with feat_func_att')
     attribute_evaluate_subfunc(feat_func_att, test_set, **cfg.test_kwargs)
     sys.exit(0)
-     
+
 # training
 for epoch in range(start_epoch, cfg.total_epochs):
     # adjust the learning rate
@@ -323,18 +321,18 @@ for epoch in range(start_epoch, cfg.total_epochs):
         epoch + 1,
         cfg.staircase_decay_at_epochs,
         cfg.staircase_decay_multiple_factor)
-    
+
     may_set_mode(modules_optims, 'train')
     # recording loss
     loss_meter = AverageMeter()
     dataset_L = len(train_loader)
     ep_st = time.time()
-    
+
     for step, (imgs, targets) in enumerate(train_loader):
-         
+
         step_st = time.time()
-        imgs_var = Variable(imgs).cuda()
-        targets_var = Variable(targets).cuda()
+        imgs_var = imgs.cuda()
+        targets_var = targets.cuda()
 
         score = model_w(imgs_var)
 
@@ -351,7 +349,7 @@ for epoch in range(start_epoch, cfg.total_epochs):
 
         # loss for the attribute classification, average over the batch size
         targets_var[targets_var == -1] = 0
-        loss = criterion(score, targets_var, weight=Variable(weights.cuda()))*num_att
+        loss = criterion(score, targets_var, weight=weights.cuda())*num_att
 
         optimizer.zero_grad()
         loss.backward()
@@ -383,5 +381,5 @@ for epoch in range(start_epoch, cfg.total_epochs):
     # test on validation set #
     ##########################
     if (epoch + 1) % cfg.epochs_per_val == 0 or epoch+1 == cfg.total_epochs:
-        print 'att test with feat_func_att'
+        print( 'att test with feat_func_att')
         attribute_evaluate_subfunc(feat_func_att, test_set, **cfg.test_kwargs)

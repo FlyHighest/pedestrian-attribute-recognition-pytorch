@@ -26,32 +26,32 @@ def extract_feat(feat_func, dataset, **kwargs):
             feat = np.zeros((N, feat_tmp.size/batch_size))
         feat[start:start+batch_size, :] = feat_tmp.reshape((batch_size, -1))
         start += batch_size
-    end_time = time.time() 
+    end_time = time.time()
     print('{} batches done, total {:.2f}s'.format(total_eps, end_time-start_time))
-    return feat 
+    return feat
 
-# attribute recognition evaluation 
+# attribute recognition evaluation
 def attribute_evaluate(feat_func, dataset, **kwargs):
-    print "extracting features for attribute recognition"
+    print( "extracting features for attribute recognition")
     pt_result = extract_feat(feat_func, dataset)
     # obain the attributes from the attribute dictionary
-    print "computing attribute recognition result"
-    N = pt_result.shape[0] 
+    print( "computing attribute recognition result")
+    N = pt_result.shape[0]
     L = pt_result.shape[1]
     gt_result = np.zeros(pt_result.shape)
     # get the groundtruth attributes
     for idx, label in enumerate(dataset.label):
         gt_result[idx, :] = label
     pt_result[pt_result>=0] = 1
-    pt_result[pt_result<0] = 0 
+    pt_result[pt_result<0] = 0
     return attribute_evaluate_lidw(gt_result, pt_result)
 
 def attribute_evaluate_lidw(gt_result, pt_result):
     """
-    Input: 
+    Input:
     gt_result, pt_result, N*L, with 0/1
     Output:
-    result 
+    result
     a dictionary, including label-based and instance-based evaluation
     label-based: label_pos_acc, label_neg_acc, label_acc
     instance-based: instance_acc, instance_precision, instance_recall, instance_F1
@@ -59,7 +59,7 @@ def attribute_evaluate_lidw(gt_result, pt_result):
     # obtain the label-based and instance-based accuracy
     # compute the label-based accuracy
     if gt_result.shape != pt_result.shape:
-        print 'Shape beteen groundtruth and predicted results are different'
+        print ( 'Shape beteen groundtruth and predicted results are different')
     # compute the label-based accuracy
     result = {}
     gt_pos = np.sum((gt_result == 1).astype(float), axis=0)
